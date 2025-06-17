@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!scene) return;
 
     const messages = [
-        "Khoa chúc thi tốt", "Thi tốt nhé ❤️", "12/7 mãi yêuu!",
+        "Khoa chúc thi tốt", "Thi tốt nhé ❤️", "12 mãi yêuu!",
     ];
 
     const Z_RANGE = { min: -1000, max: 400 };
@@ -108,3 +108,39 @@ text.style.textShadow = `
   0 0 6px ${neonColor},
   0 0 12px ${neonColor}
 `;
+
+// Hỗ trợ xoay điện thoại (xoay toàn diện: ngang, dọc, xoay tròn)
+// Hỗ trợ xoay điện thoại (xoay toàn diện: ngang, dọc, xoay tròn)
+if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', (event) => {
+        const { beta, gamma, alpha } = event;
+
+        // Giới hạn tránh xoay quá mức
+        const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
+
+        const x = clamp(beta || 0, -90, 90);     // lên/xuống
+        const y = clamp(gamma || 0, -90, 90);    // trái/phải
+        const z = clamp(alpha || 0, 0, 360);     // quay quanh trục (lắc vòng vòng)
+
+        // Biến đổi thành target rotation
+        targetX = (x - 45) * 0.5;  // nghiêng lên/xuống ảnh hưởng rotateX
+        targetY = -y * 0.5;        // nghiêng trái/phải ảnh hưởng rotateY
+
+        // Option nâng cao (nếu bạn muốn khung xoay nhẹ theo hướng quay z)
+        scene.style.transform = `rotateX(${targetX}deg) rotateY(${targetY}deg) rotateZ(${(z - 180) * 0.02}deg)`;
+    }, true);
+}
+
+
+if (
+  typeof DeviceOrientationEvent !== 'undefined' &&
+  typeof DeviceOrientationEvent.requestPermission === 'function'
+) {
+  DeviceOrientationEvent.requestPermission()
+    .then((response) => {
+      if (response === 'granted') {
+        // Đã được cấp quyền
+      }
+    })
+    .catch(console.error);
+}
