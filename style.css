@@ -1,0 +1,133 @@
+/* --- Cài đặt chung & Trang 1 --- */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden;
+}
+
+.page1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.qr-container h1 {
+    color: #f0f0f0;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.qr-code {
+    width: 250px;
+    height: 250px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 20px;
+}
+
+.qr-code:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #ff005d;
+}
+
+/* --- Trang 2 & Hiệu ứng chữ --- */
+.page2 {
+    perspective: 600px; 
+}
+
+#scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+.falling-text {
+    position: absolute;
+    white-space: nowrap;
+    user-select: none;
+    font-weight: bold;
+    will-change: transform, opacity;
+    
+    /* (NÂNG CAO) Đặt độ trong suốt ban đầu dựa trên chiều sâu */
+    opacity: var(--initial-opacity);
+    transform: translateZ(var(--z-pos)) rotate(var(--rotate));
+    animation: fall linear forwards, color-change 9s infinite linear;
+}
+
+/* (NÂNG CAO) Keyframes cho hiệu ứng rơi có vòng đời */
+@keyframes fall {
+    from {
+        transform: translateZ(var(--z-pos)) translateY(-20vh) rotate(var(--rotate));
+        opacity: var(--initial-opacity);
+    }
+    80% {
+        /* Giữ nguyên độ trong suốt trong phần lớn hành trình */
+        opacity: var(--initial-opacity);
+    }
+    to {
+        transform: translateZ(var(--z-pos)) translateY(120vh) rotate(calc(var(--rotate) + 15deg));
+        /* Mờ dần và biến mất ở cuối */
+        opacity: 0;
+    }
+}
+
+/* Keyframes cho hiệu ứng đổi màu neon */
+@keyframes color-change {
+    0%, 100% { /* Trắng Neon */
+        color: #ffffff;
+        text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff;
+    }
+    33.3% { /* Xanh Cyan */
+        color: #00e5ff;
+        text-shadow: 0 0 5px #00e5ff, 0 0 10px #00e5ff, 0 0 20px #00e5ff;
+    }
+    66.6% { /* Tím Lilac */
+        color: #c56cf0;
+        text-shadow: 0 0 5px #c56cf0, 0 0 10px #c56cf0, 0 0 20px #c56cf0;
+    }
+}
+
+.falling-text {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  color: #fff;
+  font-weight: 700;
+  pointer-events: none;
+  will-change: transform, opacity, filter;
+  transform-style: preserve-3d;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px rgba(143, 27, 197, 0.589),
+    0 0 20px rgba(245, 14, 214, 0.575),
+    0 0 40px rgba(48, 18, 223, 0.308),
+    0 0 80px #0ff;
+  animation-name: fall, fadeOut;
+  animation-timing-function: linear;
+}
+
+/* Animation rơi xuống */
+@keyframes fall {
+  0% {
+    transform: translateY(-10%) translateZ(var(--z-pos)) scale(var(--scale)) rotate(var(--rotate));
+    opacity: var(--initial-opacity);
+    filter: blur(var(--blur));
+  }
+  100% {
+    transform: translateY(110vh) translateZ(var(--z-pos)) scale(var(--scale)) rotate(var(--rotate));
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+/* Mờ dần thêm */
+@keyframes fadeOut {
+  from { opacity: var(--initial-opacity); }
+  to { opacity: 0; }
+}
